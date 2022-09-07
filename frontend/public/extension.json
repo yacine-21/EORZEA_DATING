@@ -1,0 +1,37 @@
+[
+	{
+		"id": 1,
+		"name": "A Realm Reborn",
+		"cover": "arr.png",
+		"link": "lFRYEpH1d-U",
+		"description": "Hydaelyn-a vibrant planet blessed by the Light of the Crystal. Amid azure seas, encompassing the westernmost of the Three Great Continents, there lies a realm embraced by gods and forged by heroes.Her name-Eorzea. It is here that your tale unfolds.Beckoned by the Mothercrystal-the source of all ife-you must embark upon a quest to deliver the land rom an eternity of Darkness."
+	},
+	{
+		"id": 2,
+		"name": "Heavensward",
+		"cover": "heavensward.png",
+		"link": "m2kVCzhAQXI",
+		"description": "The Scions of the Seventh Dawn have been scattered, and the Warrior of Light has been forced to flee north.Though granted shelter by Lord Haurchefant, our heroes must press on to Ishgard.But what trials await in this reclusive nation, locked in a never-ending struggle with dragons"
+	},
+	{
+		"id": 3,
+		"name": "Stormblood",
+		"cover": "stormblood.png",
+		"link": "qBEvWWdKOBA",
+		"description": "Having brought an end to the thousand-year conflict between dragon and man in the north, the Warrior of Light and his comrades prepare to liberate Ala Mhigo, a landconquered by the Garlean Empire twenty years ago.Meanwhile, in the Far East, the freedom fighters of the fallen nation of Doma struggle to rekindle he fires of hope intheir couptrymen"
+	},
+	{
+		"id": 4,
+		"name": "Shadowbringers",
+		"cover": "shadowbringers.png",
+		"link": "N1JJSZmv6JI",
+		"description": "The realm is left to struggle without its saviors, for they have been beckoned beyond time and space-beckoned to the First.Here a new adventure begins in a world where light ushers all unto oblivion. But hope is not yet lost, for where there is light there is shadow."
+	},
+	{
+		"id": 5,
+		"name": "Endwalker",
+		"cover": "endwalker.png",
+		"link": "31FTL2Ua5Ns",
+		"description": "Yet shadowed by their triumph in the First, the Warrior of Light and Sscions of the Seventh Dawn are home at last. An even greater calamity than refulgent oblivion has beenbuilding in their absence, however-a second advent ot the Final Days. Should all despair, the myriad conflicts that now ravage the land cannot but toretoken an end to life inthe Source."
+	}
+]
