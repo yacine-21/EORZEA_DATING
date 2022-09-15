@@ -108,12 +108,12 @@ import { ref, watch } from "vue";
 import * as yup from "yup";
 export default {
 	
-	setup() {
+	async setup() {
 
 		const route = useRoute();
-		console.log('====================================');
-		console.log(route.name);
-		console.log('====================================');
+		// console.log('====================================');
+		// console.log(route.name);
+		// console.log('====================================');
 
 
 		const userInfo = ref({
@@ -130,20 +130,36 @@ export default {
 			password: yup.string().required().min(7)
 		});
 
-
-		const changeType = (typeInput) =>{
-			type.value = typeInput
+		const clearInput = () =>{
+			userInfo.value = {}
 		}
+
+		const senduserInfo = async () =>{
+
+			const header = {
+				"Content-Type":"application/json",
+			}
+
+		
+			const { data, error, pending, refresh } = await useFetch("/api/login", {
+				method: "post",
+				body: userInfo.value,
+				headers: header
+			});
+
+			data.value && clearInput()
+		}
+
 		const setPasswordShow = () =>{
 			passwordShow.value = !passwordShow.value
 		}
-
 
 		const checkInfo = () => {
 			schema
 				.validate(userInfo.value)
 				.then(res => {
 					isDataCorrect.value = true;
+					userInfo.value = res
 				})
 				.catch(function (err) {
 					errorData.value = err.message;
@@ -151,8 +167,7 @@ export default {
 		};
 
 		watch(isDataCorrect, (NewValue, OldValue) => {
-			NewValue == true && alert("Data is good shape");
-			// senduserInfo()
+			NewValue == true && senduserInfo()
 		});
 
 		watch(errorData, (NewValue, OldValue) => {
@@ -164,8 +179,15 @@ export default {
 			NewValue == true ? type.value = "text" : type.value = "password"
 		})
 
+
+		const cookie = useCookie('name',{
+			maxAge:10,
+		})
+
+		cookie.value = userInfo.value.email || 'yacine'
+
+
 		const handleSubmit = () => {
-			// console.table(userInfo.value);
 			checkInfo();
 			userInfo.value = {
 				email: "",

@@ -8,6 +8,9 @@
 		"postinstall": "nuxt prepare"
 	},
 	"devDependencies": {
+		"@types/bcrypt": "^5.0.0",
+		"@vueuse/core": "^9.2.0",
+		"@vueuse/nuxt": "^9.2.0",
 		"nuxt": "3.0.0-rc.9",
 		"prisma": "^4.3.1"
 	},
@@ -17,7 +20,9 @@
 		"@pinia/nuxt": "^0.4.1",
 		"@prisma/client": "^4.3.1",
 		"@vee-validate/rules": "^4.6.7",
+		"bcrypt": "^5.0.1",
 		"pinia": "^2.0.21",
+		"universal-cookie": "^4.0.4",
 		"vee-validate": "^4.6.7",
 		"yup": "^0.32.11"
 	}

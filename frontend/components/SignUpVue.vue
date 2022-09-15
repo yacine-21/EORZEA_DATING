@@ -22,10 +22,41 @@
 
 					<div class="relative">
 						<input
+							ref="mailInput"
 							type="email"
 							v-model="userInfo.email"
 							class="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm bg-red-100" 
 							placeholder="Enter email"
+						/>
+
+						<span class="absolute inset-y-0 inline-flex items-center right-4">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="w-5 h-5 text-gray-400"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+								/>
+							</svg>
+						</span>
+					</div>
+				</div>
+
+				<div>
+					<label for="email" class="sr-only">Name</label>
+
+					<div class="relative">
+						<input
+							type="text"
+							v-model="userInfo.name"
+							class="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm bg-red-100" 
+							placeholder="Enter name"
 						/>
 
 						<span class="absolute inset-y-0 inline-flex items-center right-4">
@@ -138,13 +169,14 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref,onMounted } from "vue";
 import * as yup from "yup";
 
 export default {
 	setup() {
 		const userInfo = ref({
 			email: "",
+			name:"",
 			password: "",
 			passwordConfirm: ""
 		});
@@ -157,16 +189,33 @@ export default {
 		
 		let schema = yup.object().shape({
 			email: yup.string().email().required(),
+			name:yup.string().required(),
 			password: yup.string().required().min(7),
 			passwordConfirm: yup
 			.string()
 			.oneOf([yup.ref("password"), null], "Password don't match !")
 			.required()
 		});
-		
-		const changeType = (typeInput) =>{
-			type.value = typeInput
+
+		const clearInput = () =>{
+			userInfo.value = {}
 		}
+		const senduserInfo = async () =>{
+
+			const header = {
+				"Content-Type":"application/json",
+			}
+
+			const { data, error, pending, refresh } = await useFetch("/api/register", {
+				method: "post",
+				body: userInfo.value,
+				headers: header
+			});
+
+			data.value && clearInput()
+		}
+		
+		
 		const setPasswordShow = () =>{
 			passwordShow.value = !passwordShow.value
 		}
@@ -176,6 +225,7 @@ export default {
 				.validate(userInfo.value)
 				.then(res => {
 					isDataCorrect.value = true;
+					userInfo.value = res
 				})
 				.catch(function (err) {
 					errorData.value = err.message;
@@ -183,8 +233,7 @@ export default {
 		};
 
 		watch(isDataCorrect, (NewValue, OldValue) => {
-			NewValue == true && this.$router.push('/')
-			// senduserInfo()
+			NewValue == true && senduserInfo()			
 		});
 
 		watch(errorData, (NewValue, OldValue) => {
@@ -198,11 +247,7 @@ export default {
 		const handleSubmit = () => {
 			// console.table(userInfo.value);
 			checkInfo();
-			userInfo.value = {
-				email: "",
-				password: "",
-				passwordConfirm: ""
-			};
+
 		};
 
 		return {

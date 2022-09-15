@@ -8,12 +8,16 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 
 const { data, error, pending, refresh } = await useFetch("/api/user", {
 	method: "post",
-	body: { test: 123 }
+	body: { test: 123 },
+	headers: {
+		"Content-Type": "json/application"
+	}
 });
+
 console.log("====================================");
 console.log(data.value);
 console.log("====================================");
