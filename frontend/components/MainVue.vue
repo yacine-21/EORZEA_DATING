@@ -111,7 +111,7 @@ export default {
 				<div class="w-full md:w-1/2">
 					<a href="https://eu.finalfantasyxiv.com/" class="blur-sm hover:blur-none">
 						<div class="w-full h-auto overflow-hidden shadow-xl rounded-3xl">
-							<img src="/images/finalfantasy2.png" />
+							<img src="images/finalfantasy2.png" />
 						</div>
 					</a>
 				</div>

@@ -4,19 +4,24 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async event => {
 	// const query = useQuery(event);
-	const body = useBody(event);
+	const body = await useBody(event);
+	let { email, password, name } = body;
 
 	const saltRounds = 10;
-	let { email, password, name } = body;
-	let hashedPassword = bcrypt.hash(password, saltRounds);
-
-	bcrypt.hash(password, saltRounds, async (err, hash) => {
-		// store the hash in the db
-	});
+	let hashedPassword = await bcrypt.hash(password, saltRounds);
 
 	const newUser = await prisma.user.create({
-		data: { email: email, password: hashedPassword, name: name, Server: "" },
-		select: { id: true, name: true }
+		data: {
+			email: email,
+			password: hashedPassword,
+			Server: "",
+			name: name
+		},
+		select: {
+			id: true,
+			name: true,
+			email: true
+		}
 	});
 
 	return { newUser };

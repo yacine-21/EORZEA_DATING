@@ -174,6 +174,9 @@ import * as yup from "yup";
 
 export default {
 	setup() {
+
+		const router = useRouter();
+
 		const userInfo = ref({
 			email: "",
 			name:"",
@@ -212,6 +215,7 @@ export default {
 				headers: header
 			});
 
+			data.value.newUser.id && router.push({ path: "/SignInView" });
 			data.value && clearInput()
 		}
 		

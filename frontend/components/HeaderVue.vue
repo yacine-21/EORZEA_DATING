@@ -13,25 +13,20 @@
 				<nav
 					class="flex flex-wrap items-center mb-5 text-base md:mb-0 md:pl-8 md:ml-8 md:border-l md:border-gray-200"
 				>
-					<a
-						href="/"
+					<NuxtLink
 						class="mr-5 font-medium leading-6 text-gray-600 hover:text-gray-900"
-						>Home</a
+						to="/"
+						>Home</NuxtLink
 					>
-					<a
-						href="#_"
+					<NuxtLink
 						class="mr-5 font-medium leading-6 text-gray-600 hover:text-gray-900"
-						>Features</a
+						to="/SignUpView"
+						>Register</NuxtLink
 					>
-					<a
-						href="#_"
+					<NuxtLink
 						class="mr-5 font-medium leading-6 text-gray-600 hover:text-gray-900"
-						>Pricing</a
-					>
-					<a
-						href="#_"
-						class="mr-5 font-medium leading-6 text-gray-600 hover:text-gray-900"
-						>Blog</a
+						to="/SignInView"
+						>Login</NuxtLink
 					>
 				</nav>
 			</div>
