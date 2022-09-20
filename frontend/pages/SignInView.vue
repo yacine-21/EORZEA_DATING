@@ -1,7 +1,9 @@
 <template>
-	<HeaderVue BgHeader="bg-blue-50" />
-	<SignInVue />
-	<FooterVue BgFooter="bg-blue-50" />
+	<div>
+		<HeaderVue BgHeader="bg-blue-50" />
+		<SignInVue />
+		<FooterVue BgFooter="bg-blue-50" />
+	</div>
 </template>
 
 <script>

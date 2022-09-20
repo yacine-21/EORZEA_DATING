@@ -1,34 +1,25 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+import bcrypt from "bcrypt";
 
-export default defineEventHandler(async event => {
-	const query = useQuery(event);
-	const body = await useBody(event);
-
-	console.log(body);
+export default defineEventHandler(async e => {
+	const body = await useBody(e);
 	let { email, password } = body;
+	let user = await prisma.user.findUnique({
+		where: {
+			email
+		},
+		select: {
+			id: true,
+			email: true,
+			createdAt: true,
+			updatedAt: true,
+			password: true
+		}
+	});
 
-	// const updatedPost = await prisma.user.update({
-	// 	where: {
-	// 		id: 22
-	// 	},
-	// 	data: {
-	// 		Server: "Moogle"
-	// 	}
-	// });
-
-	// const LoggedUser = await prisma.user.create({
-	// 	data: {
-	// 		email,
-	// 		password
-	// 	},
-	// 	select: {
-	// 		id: true,
-	// 		name: true
-	// 	}
-	// });
-
-	// const users = await prisma.user.findMany();
-
-	return { body };
+	const passwordVerify = await bcrypt.compare(password, user.password);
+	if (!user) return "WRONG CREDENTIALS PLEASE RETRY !";
+	if (!passwordVerify) return "WRONG CREDENTIALS PLEASE RETRY !";
+	return { user };
 });

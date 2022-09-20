@@ -9,7 +9,15 @@
 				</p>
 			</div>
 
-			<form action="" class="max-w-md mx-auto mt-8 mb-0 space-y-4">
+			<div v-if="errorServerResponse" class="max-w-lg mx-auto text-center">
+				<h1 class="text-2xl text-red-500 text-center">{{errorServerResponse}}</h1>
+
+				<p v-if="errorData.length !== 0" class="mt-4 text-gray-500">
+					<h1 class="text-2xl text-red-500 text-center">{{ errorData }}</h1>
+				</p>
+			</div>
+
+			<form  class="max-w-md mx-auto mt-8 mb-0 space-y-4" @submit.prevent>
 				<div>
 					<label for="email" class="sr-only">Email</label>
 
@@ -84,7 +92,7 @@
 					</p>
 
 					<button
-						@click.prevent="handleSubmit"
+						@click="handleSubmit"
 						type="submit"
 						class="inline-block px-5 py-3 ml-3 text-sm font-medium text-white bg-blue-500 rounded-lg"
 					>
@@ -110,11 +118,7 @@ export default {
 	
 	async setup() {
 
-		const route = useRoute();
-		// console.log('====================================');
-		// console.log(route.name);
-		// console.log('====================================');
-
+		const route = useRouter();
 
 		const userInfo = ref({
 			email: "",
@@ -124,6 +128,7 @@ export default {
 		const passwordShow = ref(false);
 		const isDataCorrect = ref(false);
 		const errorData = ref("");
+		const errorServerResponse = ref("")
 
 		let schema = yup.object().shape({
 			email: yup.string().email().required(),
@@ -140,7 +145,6 @@ export default {
 				"Content-Type":"application/json",
 			}
 
-		
 			const { data, error, pending, refresh } = await useFetch("/api/login", {
 				method: "post",
 				body: userInfo.value,
@@ -148,6 +152,11 @@ export default {
 			});
 
 			data.value && clearInput()
+			data.value == "WRONG CREDENTIALS PLEASE RETRY !" ? errorServerResponse.value = data.value : ""
+			data.value.user && navigateTo({
+				path:"/",
+				force:true,
+			})
 		}
 
 		const setPasswordShow = () =>{
@@ -189,10 +198,6 @@ export default {
 
 		const handleSubmit = () => {
 			checkInfo();
-			userInfo.value = {
-				email: "",
-				password: ""
-			};
 		};
 
 		return {
@@ -200,7 +205,8 @@ export default {
 			handleSubmit,
 			type,
 			errorData,
-			setPasswordShow
+			setPasswordShow,
+			errorServerResponse
 		};
 	}
 };

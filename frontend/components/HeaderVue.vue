@@ -13,20 +13,21 @@
 				<nav
 					class="flex flex-wrap items-center mb-5 text-base md:mb-0 md:pl-8 md:ml-8 md:border-l md:border-gray-200"
 				>
-					<NuxtLink
+					<!-- <a
 						class="mr-5 font-medium leading-6 text-gray-600 hover:text-gray-900"
-						to="/"
-						>Home</NuxtLink
-					>
+						href="/SignUpView"
+						>Register</a
+					> -->
 					<NuxtLink
-						class="mr-5 font-medium leading-6 text-gray-600 hover:text-gray-900"
 						to="/SignUpView"
-						>Register</NuxtLink
-					>
-					<NuxtLink
 						class="mr-5 font-medium leading-6 text-gray-600 hover:text-gray-900"
-						to="/SignInView"
-						>Login</NuxtLink
+					>
+						Register
+					</NuxtLink>
+					<a
+						class="mr-5 font-medium leading-6 text-gray-600 hover:text-gray-900"
+						href="/FAQView"
+						>FAQ</a
 					>
 				</nav>
 			</div>

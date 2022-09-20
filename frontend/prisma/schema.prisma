@@ -19,4 +19,15 @@ model User {
   Server String 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  questions Question[]
+}
+
+model Question{
+  id Int @id @default(autoincrement()) @unique
+  title String
+  answer String?
+  author User @relation(fields: [authorId],references: [id])
+  authorId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

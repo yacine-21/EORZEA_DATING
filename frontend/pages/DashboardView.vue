@@ -1,9 +1,7 @@
 <template>
-	<div>
-		<HeaderVue BgHeader="bg-red-50" />
-		<SignUpVue />
-		<FooterVue BgFooter="bg-red-50" />
-	</div>
+	<HeaderVue BgHeader="bg-blue-50" />
+	<h1>ICI LE DASHBOARD !</h1>
+	<FooterVue BgFooter="bg-blue-50" />
 </template>
 
 <script>
