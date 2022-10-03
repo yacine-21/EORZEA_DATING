@@ -10,24 +10,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model User {
+model Player {
   id Int @id @default(autoincrement())
   email String @unique
   name String?
   password String
-  Server String 
+  Server String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   questions Question[]
 }
 
-model Question{
-  id Int @id @default(autoincrement()) @unique
-  title String
+
+model Answer {
+  id Int @id @unique @default(autoincrement())
+  content String
+  idPlayer Int
+  questions AnswerOnQuestion[]
+}
+
+
+model Question {
+  id         Int      @id @unique @default(autoincrement())
+  title      String
+  playerId   Int
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  answers AnswerOnQuestion[]
+  player     Player     @relation(fields: [playerId], references: [id])
+}
+
+
+model AnswerOnQuestion {
+  answer Answer @relation(fields: [answerId],references: [id])
+  answerId Int
+  question Question @relation(fields: [questionId],references: [id])
+  questionId Int
+
+  @@id([answerId,questionId])
+}
+
+
+model QuestionFrequentlyAsked {
+  id Int @id @unique @default(autoincrement())
+  title String?
   answer String?
-  author User @relation(fields: [authorId],references: [id])
-  authorId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }

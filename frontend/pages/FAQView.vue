@@ -2,33 +2,39 @@
 	<HeaderVue BgHeader="bg-gray-50" />
 
 	<div class="space-y-4 min-h-full">
-		<h1 class=" text-6xl text-center mb-10 mt-10">
+		<h1 class="text-6xl text-center mb-10 mt-10">
 			<span class="text-violet-500">Frequently</span>
-			Asked Questions 
+			Asked Questions
 		</h1>
-		<p class="text-gray-600 max-w-lg mx-auto text-2xl text-center justify-center mt-10 mb-5">Answered all frequently asked questions, Still confused ? feel free to contact
-		us bellow.</p>
-		<hr>
+		<p
+			class="text-gray-600 max-w-lg mx-auto text-2xl text-center justify-center mt-10 mb-5"
+		>
+			Answered all frequently asked questions, Still confused ? feel free to
+			contact us bellow.
+		</p>
+		<hr />
 	</div>
 
 	<div class="space-y-4 min-h-full">
-		<QuestionVue
-			v-for="n in 4"
-			borderColor="border-green-500"
-			:questionText="n"
-		/>
-	</div>
-
-
-	<div class="space-y-4 min-h-full ">
-		<h1 class=" text-6xl text-center mb-10 mt-10">
+		<h1 class="text-6xl text-center mb-10 mt-10">
 			<span class="text-violet-500">Or</span>
-			 you can view 
-			 <span class="text-violet-500 underline">
+			you can view
+			<span class="text-violet-500 underline">
 				<a href="/UserQuestionView">questions</a>
 			</span>
-			<br> asked by other players
+			<br />
+			asked by other players
 		</h1>
+	</div>
+
+	<div
+		v-for="frenquentlyAskedQuestion in frenquentlyAskedQuestions"
+		class="space-y-4 min-h-full"
+	>
+		<QuestionVue
+			borderColor="border-green-500"
+			:questionText="frenquentlyAskedQuestion"
+		/>
 	</div>
 
 	<section class="relative flex flex-wrap lg:h-screen lg:items-center">
@@ -41,9 +47,9 @@
 				<p class="mt-4 text-gray-500 mb-5">
 					*your question will be answerd within 2 weeks
 				</p>
-				<p v-if="errorData.length !== 0" class="mt-4 text-gray-500">
+				<div v-if="errorData.length !== 0" class="mt-4 text-gray-500">
 					<h1 class="text-2xl text-red-500 text-center">{{ errorData }}</h1>
-				</p>
+				</div>
 			</div>
 
 			<form @submit.prevent class="space-y-4">
@@ -123,6 +129,7 @@
 <script>
 import * as yup from "yup";
 import { ref, watch } from "vue";
+import { da } from "@formkit/i18n";
 
 export default {
 	setup() {
@@ -134,6 +141,7 @@ export default {
 		const isDataCorrect = ref(false);
 		const errorData = ref("");
 		const errorServerResponse = ref();
+		const frenquentlyAskedQuestions = ref([]);
 
 		let schema = yup.object().shape({
 			email: yup.string().email().required(),
@@ -141,9 +149,9 @@ export default {
 			title: yup.string().required()
 		});
 
-		const clearInput = () =>{
-			questionInfo.value = {}
-		}
+		const clearInput = () => {
+			questionInfo.value = {};
+		};
 
 		const senduserInfo = async () => {
 			const header = {
@@ -157,10 +165,25 @@ export default {
 			});
 
 			data.value && clearInput();
-			data.value.id && sendToast(2000)
-			errorServerResponse.value = data.value
-			
+			// data.value.id && sendToast(2000);
+			errorServerResponse.value = data.value;
 		};
+
+		const fetchFrequentlyAskedQuestions = async () => {
+			const header = {
+				"Content-Type": "application/json"
+			};
+
+			const { data, error, pending, refresh } = await useFetch(
+				"/api/questionFrequentlyAsked",
+				{
+					method: "get",
+					headers: header
+				}
+			);
+			frenquentlyAskedQuestions.value = data.value;
+		};
+		fetchFrequentlyAskedQuestions();
 
 		const checkInfo = () => {
 			schema
@@ -168,10 +191,9 @@ export default {
 				.then(res => {
 					isDataCorrect.value = true;
 					questionInfo.value = res;
-					
 				})
 				.catch(function (err) {
-					errorData.value = err.message
+					errorData.value = err.message;
 				});
 		};
 
@@ -183,15 +205,14 @@ export default {
 			NewValue == true && senduserInfo();
 		});
 
-		watch(errorData, (NewValue, OldValue) => {
-			
-		});
+		watch(errorData, (NewValue, OldValue) => {});
 
 		return {
 			questionInfo,
 			handleSubmit,
 			errorServerResponse,
 			errorData,
+			frenquentlyAskedQuestions
 		};
 	}
 };

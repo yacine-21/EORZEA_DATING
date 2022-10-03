@@ -2,7 +2,7 @@
 	<details class="p-6 border-l-4 bg-gray-50 group" :class="borderColor">
 		<summary class="flex items-center justify-between cursor-pointer">
 			<h5 class="text-lg font-medium text-gray-900">
-				{{ questionText }}
+				{{ questionText.title }}
 			</h5>
 			<span
 				class="flex-shrink-0 ml-1.5 p-1.5 text-gray-900 bg-white rounded-full sm:p-3"
@@ -21,26 +21,20 @@
 				</svg>
 			</span>
 		</summary>
-		<p class="mt-4 leading-relaxed text-gray-700">{{ answerText }}</p>
+		<p class="mt-4 leading-relaxed text-gray-700">{{ questionText.answer }}</p>
 	</details>
 </template>
 
 <script>
 export default {
 	props: {
-		answerText: {
-			default: "random answer"
-		},
-		questionText: {
-			default: "random question"
-		},
+		questionText: {},
 		borderColor: {
 			default: "border-white"
 		}
 	},
 	setup(props) {
 		return {
-			answerText: props.answerText,
 			questionText: props.questionText,
 			borderColor: props.borderColor
 		};

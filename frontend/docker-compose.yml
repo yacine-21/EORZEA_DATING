@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+ front:
+  build: .
+  depends_on:
+   - postgres
+  ports:
+   - 3000:3000
+  volumes:
+   - .:/app
+  environment:
+   DATABASE_URL: postgres://example:postgres@localhost:5432/pfe?schema=public
+
+ postgres:
+  image: postgres:14-alpine
+  ports:
+   - "5432:5432"
+  volumes:
+   - pgdata:/var/lib/postgresql/data
+  env_file:
+   - .env
+
+ adminer:
+  image: adminer
+  ports:
+   - 8080:8080
+  depends_on:
+   - postgres
+volumes:
+ pgdata:

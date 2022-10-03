@@ -1,12 +1,27 @@
-GET http://localhost:3000/api/user
+GET http://localhost:3000/api/player
 Content-Type: application/json
 
 #####
 
-POST  http://localhost:3000/api/login
+POST  http://localhost:3000/api/register
 Content-Type: application/json
 
+{
+    "email":"yacinelyoubi0@gmail.com",
+    "password":"ly92140CLM!",
+    "name":"Seito"
+}
+
 #####
+
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+    "email":"yacinelyoubi37@gmail.com",
+    "password":"ly92140CLM!",
+}
+###
 
 POST  http://localhost:3000/api/question
 
@@ -22,8 +37,28 @@ GET  http://localhost:3000/api/questions
 ###
 
 
+GET  http://localhost:3000/api/answer?idQuestion=1
+
+###
+
+
 POST http://localhost:3000/api/answer
 
 {
-    "answer":"je suis laaaa"
+    "id":1,
+    "answer":"le site est bien ? "
 }
+
+###
+
+
+POST http://localhost:3000/api/questionFrequentlyAsked
+
+{
+    "question":"Je peux avoir un compte premium  ?",
+    "answer":"ptdrrr non, désolé, non ne pouvons offrir de compte premium"
+}
+###
+
+
+GET http://localhost:3000/api/questionFrequentlyAsked

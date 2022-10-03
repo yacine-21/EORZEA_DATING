@@ -11,10 +11,34 @@
 						</p>
 					</header>
 
-					<p class="mt-2 text-gray-700 mb-10">
-						<span class="underline">Answer</span> :
-						{{ question.answer ? question.answer : "no answer yet" }}
-					</p>
+					<div v-if="showMessage">
+						<div class="mt-2 text-gray-700 mb-10">
+							<span class="underline">Answer</span> :
+							<!-- {{ answers ? answers[0].answer.content : "no answer yet" }} -->
+							<div v-if="answers.lenght == 0">
+								<h1>no answer yet</h1>
+							</div>
+							<div v-else v-for="answer in answers">
+								- {{ answer.answer.content }}
+								<br />
+							</div>
+							<br />
+							<button
+								@click="toggleShowMessage"
+								class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 border border-gray-700 rounded-2xl"
+							>
+								Hide answers
+							</button>
+						</div>
+					</div>
+					<div v-else>
+						<button
+							@click="toggleShowMessage(question.id)"
+							class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 border border-gray-700 mt-5 mb-5 rounded-2xl"
+						>
+							Show the answers
+						</button>
+					</div>
 
 					<form @submit.prevent>
 						<label
@@ -48,7 +72,7 @@
 					<footer class="mt-4">
 						<p class="text-gray-500 text-lg text-right">
 							<span>
-								{{ question.author.name }}
+								{{ question.player.name }}
 							</span>
 							- {{ $formatDate(question.createdAt) }}
 						</p>
@@ -71,16 +95,25 @@ export default {
 	},
 
 	setup(props) {
-		const route = useRouter();
+		const router = useRouter();
 
 		const answerValue = ref({
 			answer: "",
 			id: props.question.id
 		});
 
+		const toggleShowMessage = id => {
+			if (typeof id == "number") {
+				fetchAnswer(id);
+			}
+			showMessage.value = !showMessage.value;
+		};
+
 		const isDataCorrect = ref(false);
 		const errorData = ref("");
 		const errorServerResponse = ref("");
+		const showMessage = ref(false);
+		const answers = ref([]);
 
 		let schema = yup.object().shape({
 			answer: yup.string().required()
@@ -103,13 +136,29 @@ export default {
 				body: answerValue.value,
 				headers: header
 			});
-
 			data.value && clearInput();
 			data.value == "WRONG CREDENTIALS PLEASE RETRY !"
 				? (errorServerResponse.value = data.value)
 				: "";
-			data.value.question.id &&
-				route.push({ path: "/FAQView", force: true, replace: true });
+			data.value.question.id && router.push({ path: "/FAQView" });
+			refresh();
+		};
+
+		const fetchAnswer = async id => {
+			const header = {
+				"Content-Type": "application/json"
+			};
+
+			const { data, error, pending, refresh } = await useFetch(
+				`/api/answer?idQuestion=${id}`,
+				{
+					method: "get",
+					headers: header
+				}
+			);
+
+			refresh();
+			data.value && (answers.value = data.value);
 		};
 
 		watch(isDataCorrect, (NewValue, OldValue) => {
@@ -140,7 +189,11 @@ export default {
 		return {
 			handleSubmit,
 			question: props.question,
-			answerValue
+			answerValue,
+			fetchAnswer,
+			toggleShowMessage,
+			showMessage,
+			answers
 		};
 	}
 };

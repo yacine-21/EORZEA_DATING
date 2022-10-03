@@ -5,22 +5,27 @@ export default defineEventHandler(async e => {
 	const body = await useBody(e);
 	let { answer, id } = body;
 
-	let question = await prisma.question.update({
-		where: {
-			id: id
-		},
+	const newAnswer = await prisma.answer.create({
 		data: {
-			answer: answer
-		},
-		select: {
-			answer: true,
-			author: true,
-			authorId: true,
-			title: true,
-			id: true
+			idPlayer: 1,
+			content: answer
 		}
 	});
 
+	if (newAnswer.id) {
+		const newQuestionOnReponse = await prisma.answerOnQuestion.create({
+			data: {
+				answerId: newAnswer.id,
+				questionId: id
+			},
+			include: {
+				answer: true,
+				question: true
+			}
+		});
+		console.log(newQuestionOnReponse);
+	}
+
 	// if (!user) return "WRONG CREDENTIALS PLEASE RETRY !";
-	return { question };
+	return { newAnswer };
 });

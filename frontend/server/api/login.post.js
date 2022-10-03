@@ -2,24 +2,20 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import bcrypt from "bcrypt";
 
-export default defineEventHandler(async e => {
-	const body = await useBody(e);
-	let { email, password } = body;
-	let user = await prisma.user.findUnique({
+export default defineEventHandler(async event => {
+	const body = await useBody(event);
+	const { email, password } = body;
+	const player = await prisma.player.findUnique({
 		where: {
-			email
+			email: email
 		},
 		select: {
-			id: true,
-			email: true,
-			createdAt: true,
-			updatedAt: true,
 			password: true
 		}
 	});
 
-	const passwordVerify = await bcrypt.compare(password, user.password);
-	if (!user) return "WRONG CREDENTIALS PLEASE RETRY !";
+	const passwordVerify = await bcrypt.compare(password, player.password);
+	if (!player) return "WRONG CREDENTIALS PLEASE RETRY !";
 	if (!passwordVerify) return "WRONG CREDENTIALS PLEASE RETRY !";
-	return { user };
+	return { player };
 });

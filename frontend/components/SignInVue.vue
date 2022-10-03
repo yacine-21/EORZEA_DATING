@@ -12,12 +12,9 @@
 			<div v-if="errorServerResponse" class="max-w-lg mx-auto text-center">
 				<h1 class="text-2xl text-red-500 text-center">{{errorServerResponse}}</h1>
 
-				<p v-if="errorData.length !== 0" class="mt-4 text-gray-500">
-					<h1 class="text-2xl text-red-500 text-center">{{ errorData }}</h1>
-				</p>
 			</div>
 
-			<form  class="max-w-md mx-auto mt-8 mb-0 space-y-4" @submit.prevent>
+			<form  id="form" class="max-w-md mx-auto mt-8 mb-0 space-y-4" @submit.prevent>
 				<div>
 					<label for="email" class="sr-only">Email</label>
 
@@ -25,7 +22,7 @@
 						<input
 							autocomplete="email"
 							type="email"
-							v-model="userInfo.email"
+							v-model="PlayerInfo.email"
 							class="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm bg-blue-100"
 							placeholder="Enter email"
 						/>
@@ -54,7 +51,7 @@
 					<div class="relative">
 						<input
 							autocomplete="current-password"
-							v-model="userInfo.password"
+							v-model="PlayerInfo.password"
 							:type="type"
 							class="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm bg-blue-100"
 							placeholder="Enter password"
@@ -118,9 +115,9 @@ export default {
 	
 	async setup() {
 
-		const route = useRouter();
+		const router = useRouter();
 
-		const userInfo = ref({
+		const PlayerInfo = ref({
 			email: "",
 			password: ""
 		});
@@ -136,27 +133,23 @@ export default {
 		});
 
 		const clearInput = () =>{
-			userInfo.value = {}
+			PlayerInfo.value = {}
 		}
 
-		const senduserInfo = async () =>{
-
+		const sendPlayerInfo = async () =>{
+			console.log("step 1");
 			const header = {
 				"Content-Type":"application/json",
 			}
-
 			const { data, error, pending, refresh } = await useFetch("/api/login", {
 				method: "post",
-				body: userInfo.value,
+				body: PlayerInfo.value,
 				headers: header
 			});
-
 			data.value && clearInput()
 			data.value == "WRONG CREDENTIALS PLEASE RETRY !" ? errorServerResponse.value = data.value : ""
-			data.value.user && navigateTo({
-				path:"/",
-				force:true,
-			})
+			data.value.player && router.push({path:"/"})
+			refresh()
 		}
 
 		const setPasswordShow = () =>{
@@ -164,20 +157,24 @@ export default {
 		}
 
 		const checkInfo = () => {
+			
 			schema
-				.validate(userInfo.value)
+				.validate(PlayerInfo.value)
 				.then(res => {
 					isDataCorrect.value = true;
-					userInfo.value = res
+					PlayerInfo.value = res
+					sendPlayerInfo()
+
 				})
 				.catch(function (err) {
 					errorData.value = err.message;
 				});
 		};
 
-		watch(isDataCorrect, (NewValue, OldValue) => {
-			NewValue == true && senduserInfo()
-		});
+		// watch(isDataCorrect, (NewValue, OldValue) => {
+		// 	// console.log("here");
+		// 	// NewValue == true && senduserInfo()
+		// });
 
 		watch(errorData, (NewValue, OldValue) => {
 			console.log(NewValue);
@@ -193,7 +190,7 @@ export default {
 			maxAge:10,
 		})
 
-		cookie.value = userInfo.value.email || 'yacine'
+		cookie.value = PlayerInfo.value.email || 'yacine'
 
 
 		const handleSubmit = () => {
@@ -201,7 +198,7 @@ export default {
 		};
 
 		return {
-			userInfo,
+			PlayerInfo: PlayerInfo,
 			handleSubmit,
 			type,
 			errorData,

@@ -24,7 +24,7 @@
 						<input
 							ref="mailInput"
 							type="email"
-							v-model="userInfo.email"
+							v-model="playerInfo.email"
 							class="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm bg-red-100" 
 							placeholder="Enter email"
 						/>
@@ -54,27 +54,10 @@
 					<div class="relative">
 						<input
 							type="text"
-							v-model="userInfo.name"
+							v-model="playerInfo.name"
 							class="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm bg-red-100" 
 							placeholder="Enter name"
 						/>
-
-						<span class="absolute inset-y-0 inline-flex items-center right-4">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="w-5 h-5 text-gray-400"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-								/>
-							</svg>
-						</span>
 					</div>
 				</div>
 
@@ -82,7 +65,7 @@
 					<label for="password" class="sr-only">Password</label>
 					<div class="relative">
 						<input
-							v-model="userInfo.password"
+							v-model="playerInfo.password"
 							:type="type"
 							class="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm bg-red-100"
 							placeholder="Enter password"
@@ -117,7 +100,7 @@
 					<label for="password-confirm" class="sr-only">Password Confirm</label>
 					<div class="relative">
 						<input
-							v-model="userInfo.passwordConfirm"
+							v-model="playerInfo.passwordConfirm"
 							id="password-confirm"
 							:type="type"
 							class="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm bg-red-100"
@@ -175,9 +158,9 @@ import * as yup from "yup";
 export default {
 	setup() {
 
-		const route = useRouter();
+		const router = useRouter();
 
-		const userInfo = ref({
+		const playerInfo = ref({
 			email: "",
 			name:"",
 			password: "",
@@ -201,9 +184,9 @@ export default {
 		});
 
 		const clearInput = () =>{
-			userInfo.value = {}
+			playerInfo.value = {}
 		}
-		const senduserInfo = async () =>{
+		const sendPlayerInfo = async () =>{
 
 			const header = {
 				"Content-Type":"application/json",
@@ -211,13 +194,15 @@ export default {
 
 			const { data, error, pending, refresh } = await useFetch("/api/register", {
 				method: "post",
-				body: userInfo.value,
+				body: playerInfo.value,
 				headers: header
 			});
 
-			data.value.newUser.id && route.push({ path: "/SignInView" });
+			data.value.newPlayer.id && router.push({
+				path:'SignInView'
+			})
 			data.value && clearInput()
-			
+			refresh()
 		}
 		
 		
@@ -227,10 +212,10 @@ export default {
 
 		const checkInfo = () => {
 			schema
-				.validate(userInfo.value)
+				.validate(playerInfo.value)
 				.then(res => {
 					isDataCorrect.value = true;
-					userInfo.value = res
+					playerInfo.value = res
 				})
 				.catch(function (err) {
 					errorData.value = err.message;
@@ -238,7 +223,7 @@ export default {
 		};
 
 		watch(isDataCorrect, (NewValue, OldValue) => {
-			NewValue == true && senduserInfo()			
+			NewValue == true && sendPlayerInfo()			
 		});
 
 		watch(errorData, (NewValue, OldValue) => {
@@ -250,13 +235,12 @@ export default {
 		})
 
 		const handleSubmit = () => {
-			// console.table(userInfo.value);
 			checkInfo();
 
 		};
 
 		return {
-			userInfo,
+			playerInfo: playerInfo,
 			handleSubmit,
 			errorData,
 			type,

@@ -5,7 +5,7 @@ export default defineEventHandler(async e => {
 	const body = await useBody(e);
 	let { email, title, name } = body;
 
-	let user = await prisma.user.findUnique({
+	let player = await prisma.player.findUnique({
 		where: {
 			email
 		},
@@ -14,14 +14,26 @@ export default defineEventHandler(async e => {
 		}
 	});
 
-	if (!user)
+	if (!player)
 		createError({
 			statusMessage: "WRONG CREDENTIALS PLEASE RETRY !"
 		});
 	let newQuestion = await prisma.question.create({
 		data: {
 			title,
-			authorId: user.id
+			playerId: player.id,
+			answers: {
+				create: [
+					{
+						answer: {
+							create: {
+								content: "",
+								idPlayer: player.id
+							}
+						}
+					}
+				]
+			}
 		}
 	});
 

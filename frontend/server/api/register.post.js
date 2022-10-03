@@ -10,7 +10,7 @@ export default defineEventHandler(async event => {
 	const saltRounds = 10;
 	let hashedPassword = await bcrypt.hash(password, saltRounds);
 
-	const newUser = await prisma.user.create({
+	const newPlayer = await prisma.player.create({
 		data: {
 			email: email,
 			password: hashedPassword,
@@ -24,5 +24,5 @@ export default defineEventHandler(async event => {
 		}
 	});
 
-	return { newUser };
+	return { newPlayer };
 });
